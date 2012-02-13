@@ -69,8 +69,9 @@ class TestOfPaceCalculator extends UnitTestCase {
       array('3.54', 4.274), // 3.54 / km
     );
 
+    $precision = 3;
     foreach ($testcases as $case) {
-      $pace = $paceCalculator->paceToMetresPerSeconds($case[0]);
+      $pace = $paceCalculator->paceToMetresPerSeconds($case[0], $precision);
       $this->assertEqual($case[1], $pace);
     }
   }
@@ -88,21 +89,22 @@ class TestOfPaceCalculator extends UnitTestCase {
         array('6.54', 3.887), // 3.54 / km
     );
 
+    $precision = 3;
     foreach ($testcases as $case) {
-      $pace = $paceCalculator->milePaceToMetresPerSeconds($case[0]);
+      $pace = $paceCalculator->milePaceToMetresPerSeconds($case[0], $precision);
       $this->assertEqual($case[1], $pace);
     }
   }
 
 
-  function xtestGetDistance() {
+  function testGetDistance() {
     $paceCalculator = new PaceCalculator();
     $distance;
     $testcases = array(
       // mins, pace, distance
-      array('0.25', '5', 5), // 25mins, 5min/km, 5k
-      array('45.0', '4.15', 10.59), // 25mins, 8min/mile, 5.03k
-      array('47.30', '4.45', 10), // 45mins, 8min/mile, 9.03k
+      array('5.0', '0.25.0', 5000), // 5min/km, 25mins 5k
+      array('4.15', '45.0', 10588), //
+      array('4.45', '47.30', 10000), // 45mins, 8min/mile, 9.03k
     );
 
     foreach ($testcases as $case) {
