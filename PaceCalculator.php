@@ -33,12 +33,12 @@ class PaceCalculator {
    * @param unknown_type $pace
    * @param unknown_type $time
    */
-  public function getDistance($pace, $time) {
-    $this->pace = $pace;
+  public function getDistance($pace, $time, $precision=0) {
+    $this->pace = self::paceToMetresPerSeconds($pace);
     $this->time = self::timeToSeconds($time);
 
     $this->distance = $this->pace * $this->time;
-    return round($this->distance, 2);
+    return self::roundValue($this->distance, $precision);
   }
 
 
@@ -89,11 +89,16 @@ class PaceCalculator {
    * Convert to m/s
    * @param unknown_type $pace
    */
-  public function paceToMetresPerSeconds($pace) {
+  public function paceToMetresPerSeconds($pace, $precision=0) {
     //
     $pace = self::timeToSeconds($pace);
     $pace = $pace / 1000;
-    $pace = round((1/$pace), 3);
+    $pace = (1/$pace);
+
+    if ($precision) {
+      $pace = round($pace, $precision);
+    }
+
     return $pace;
   }
 
@@ -103,13 +108,17 @@ class PaceCalculator {
    * Convert to m/s
    * @param unknown_type $pace
    */
-  public function milePaceToMetresPerSeconds($pace) {
+  public function milePaceToMetresPerSeconds($pace, $precision=0) {
     //
     $pace = self::timeToSeconds($pace);
     $pace = $pace / self::MILE;
-    $pace = round((1/$pace), 3);
+    $pace = (1/$pace);
+    if ($precision) {
+      $pace = round($pace, $precision);
+    }
     return $pace;
   }
+
 
   /**
    * pace expected to be in format mm.ss/km
@@ -122,5 +131,10 @@ class PaceCalculator {
 
     }
 
+  }
+
+
+  function roundValue($value, $precision) {
+    return round($value, $precision);
   }
 }
