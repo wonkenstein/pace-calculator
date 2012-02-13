@@ -1,1 +1,11 @@
 Running Pace Calculator
+
+Calculate pace in min/km
+
+Distance / Time
+
+$paceCalculator->getTime($distance, $pace);
+$paceCalculator->getDistance($pace, $time);
+$paceCalculator->getPace($distance, $time);
+
+$paceCalculator->getTimeSplits($distance, $time, $splits);
