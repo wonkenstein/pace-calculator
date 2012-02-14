@@ -33,11 +33,19 @@ class PaceCalculator {
    * @param unknown_type $pace
    * @param unknown_type $time
    */
-  public function getDistance($pace, $time, $precision=0) {
-    $this->pace = self::paceToMetresPerSeconds($pace);
-    $this->time = self::timeToSeconds($time);
+  public function getDistance($pace, $time, $type=self::METRIC, $precision=0) {
 
+    $this->time = self::timeToSeconds($time);
+    $this->pace = self::paceToMetresPerSeconds($pace, $type);
+
+    // get the distance
     $this->distance = $this->pace * $this->time;
+
+    if ($type == self::IMPERIAL) {
+      // convert back to miles
+      $precision = 4; //default precision
+      $this->distance = $this->distance / self::MILE;
+    }
     return self::roundValue($this->distance, $precision);
   }
 
@@ -47,9 +55,9 @@ class PaceCalculator {
    * @param unknown_type $distance
    * @param unknown_type $time
    */
-  public function getPace($distance, $time) {
+  public function getPace($distance, $time, $precision) {
     $this->distance = $distance;
-    $this->time = $time;
+    $this->time = self::timeToSeconds($time);
 
     $this->pace = $this->distance / $this->time;
     return round($this->pace, 2);
@@ -89,10 +97,12 @@ class PaceCalculator {
    * Convert to m/s
    * @param unknown_type $pace
    */
-  public function paceToMetresPerSeconds($pace, $precision=0) {
+  public function paceToMetresPerSeconds($pace, $type=self::METRIC, $precision=0) {
     //
+    $unit_distance = ($type == self::IMPERIAL) ? self::MILE : self::KM;
+
     $pace = self::timeToSeconds($pace);
-    $pace = $pace / 1000;
+    $pace = $pace / $unit_distance;
     $pace = (1/$pace);
 
     if ($precision) {
@@ -103,38 +113,7 @@ class PaceCalculator {
   }
 
 
-  /**
-   * Format of min/mile
-   * Convert to m/s
-   * @param unknown_type $pace
-   */
-  public function milePaceToMetresPerSeconds($pace, $precision=0) {
-    //
-    $pace = self::timeToSeconds($pace);
-    $pace = $pace / self::MILE;
-    $pace = (1/$pace);
-    if ($precision) {
-      $pace = round($pace, $precision);
-    }
-    return $pace;
-  }
-
-
-  /**
-   * pace expected to be in format mm.ss/km
-   * Convert to metres/sec
-   * @param unknown_type $pace
-   */
-  public function convertPace($pace, $type=METRIC) {
-    if ($type == METRIC) {
-      // pace = mins/km
-
-    }
-
-  }
-
-
-  function roundValue($value, $precision) {
+  private function roundValue($value, $precision) {
     return round($value, $precision);
   }
 }
