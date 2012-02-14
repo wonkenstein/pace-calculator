@@ -19,12 +19,18 @@ class PaceCalculator {
    * @param unknown_type $distance
    * @param unknown_type $pace
    */
-  public function getTime($distance, $pace) {
+  public function getTime($distance, $pace, $type=self::METRIC) {
+
     $this->distance = $distance;
-    $this->pace = $pace;
+    $this->pace = self::paceToMetresPerSeconds($pace, $type);
+
+    if ($type == self::IMPERIAL) {
+      $this->distance = self::milesToMetres($this->distance);
+    }
 
     $this->time = $this->distance / $this->pace;
-    return round($this->time, 2);
+
+    return self::formatTime($this->time);
   }
 
 
@@ -110,6 +116,39 @@ class PaceCalculator {
     }
 
     return $pace;
+  }
+
+  /**
+   *
+   * @param unknown_type $miles
+   */
+  public function milesToMetres($miles) {
+    $metres = $miles * self::MILE;
+    return $metres;
+  }
+
+
+  /**
+   *
+   * @param unknown_type $seconds
+   */
+  public function formatTime($seconds) {
+
+    $format = 'U';
+    $seconds = round($seconds,0);
+    $date1 = DateTime::createFromFormat($format, 0);
+    $date2 = DateTime::createFromFormat($format, $seconds);
+
+    $interval = $date2->diff($date1);
+
+    if ($seconds > self::SECS_IN_HOUR) {
+      $time = $interval->format('%h.%i.%s');
+    }
+    else {
+      $time = $interval->format('%i.%s');
+    }
+
+    return $time;
   }
 
 
