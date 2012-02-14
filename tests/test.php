@@ -85,7 +85,7 @@ class TestOfPaceCalculator extends UnitTestCase {
 
   function testGetDistance() {
     $paceCalculator = new PaceCalculator();
-    $distance;
+
     $testcases = array(
       // mins, pace, distance
       array('5.0', '0.25.0', 5000, PaceCalculator::METRIC), // 5min/km, 25mins 5k
@@ -98,6 +98,23 @@ class TestOfPaceCalculator extends UnitTestCase {
       $distance = $paceCalculator->getDistance($case[0], $case[1], $case[3]);
       $this->assertEqual($case[2], $distance);
     }
+  }
 
+
+  function testGetTime() {
+    $paceCalculator = new PaceCalculator();
+
+    $testcases = array(
+    // mins, pace, distance
+        array('10000', '4.45', '47.30', PaceCalculator::METRIC), // 5min/km, 25mins 5k
+        array('21097.5', '5.0', '1.45.29', PaceCalculator::METRIC), //
+        array('5000', '4.11', '20.55', PaceCalculator::METRIC), // 45mins, 8min/mile, 9.03k
+        array('13.109375', '8.0', '1.44.53', PaceCalculator::IMPERIAL), // 45mins, 8min/mile, 9.03k
+    );
+
+    foreach ($testcases as $case) {
+      $time = $paceCalculator->getTime($case[0], $case[1], $case[3]);
+      $this->assertEqual($case[2], $time);
+    }
   }
 }
