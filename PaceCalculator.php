@@ -8,6 +8,7 @@ class PaceCalculator {
   const SECS_IN_MIN = 60; // secs
   const SECS_IN_HOUR = 3600; // 60 * 60
   const SECS_IN_DAY = 86400; // 60 * 60 * 24
+  const TIME_DELIMITER = '.';
 
   // property declaration
   public $pace = 0;
@@ -17,8 +18,8 @@ class PaceCalculator {
 
   /**
    *
-   * @param unknown_type $distance
-   * @param unknown_type $pace
+   * @param $distance metres or miles
+   * @param $pace min/km or min/mile
    */
   public function getTime($distance, $pace, $type=self::METRIC) {
 
@@ -26,7 +27,7 @@ class PaceCalculator {
     $this->pace = self::paceToMetresPerSeconds($pace, $type);
 
     if ($type == self::IMPERIAL) {
-      $this->distance *= self::MILE;
+      $this->distance *= self::MILE; // convert miles to metres
     }
 
     $this->time = $this->distance / $this->pace;
@@ -37,8 +38,8 @@ class PaceCalculator {
 
   /**
    *
-   * @param unknown_type $pace
-   * @param unknown_type $time
+   * @param $pace min/km or min/mile
+   * @param $time hh.mm.ss
    */
   public function getDistance($pace, $time, $type=self::METRIC, $precision=0) {
 
@@ -59,7 +60,7 @@ class PaceCalculator {
 
   /**
    * returns min/km or min/mile
-   * @param $distance metres
+   * @param $distance metres or miles
    * @param $time hh.mm.ss
    */
   public function getPace($distance, $time, $type=self::METRIC, $precision=2) {
@@ -88,11 +89,11 @@ class PaceCalculator {
 
 
   /**
-   * Assume in format of hh.mm.ss or hh:mm:ss
-   * @param unknown_type $time
+   * Assume in standard format
+   * @param $time hh.mm.ss
    */
   public function timeToSeconds($time) {
-    $time = array_reverse(explode('.', $time));
+    $time = array_reverse(explode(self::TIME_DELIMITER, $time));
 
     $secs = 0;
     foreach ($time as $i => $unit) {
@@ -150,11 +151,12 @@ class PaceCalculator {
     $interval = $date2->diff($date1);
 
     if ($seconds > self::SECS_IN_HOUR) {
-      $time = $interval->format('%h.%i.%s');
+      $format = array('%h','%i','%s');
     }
     else {
-      $time = $interval->format('%i.%s');
+      $format = array('%i','%s');
     }
+    $time = $interval->format(implode(self::TIME_DELIMITER, $format));
 
     return $time;
   }
