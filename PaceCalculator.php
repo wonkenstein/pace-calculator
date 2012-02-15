@@ -14,6 +14,7 @@ class PaceCalculator {
   public $distance = 0;
   public $time = 0;
 
+
   /**
    *
    * @param unknown_type $distance
@@ -25,7 +26,7 @@ class PaceCalculator {
     $this->pace = self::paceToMetresPerSeconds($pace, $type);
 
     if ($type == self::IMPERIAL) {
-      $this->distance = self::milesToMetres($this->distance);
+      $this->distance *= self::MILE;
     }
 
     $this->time = $this->distance / $this->pace;
@@ -57,16 +58,32 @@ class PaceCalculator {
 
 
   /**
-   *
-   * @param unknown_type $distance
-   * @param unknown_type $time
+   * returns min/km or min/mile
+   * @param $distance metres
+   * @param $time hh.mm.ss
    */
-  public function getPace($distance, $time, $precision) {
+  public function getPace($distance, $time, $type=self::METRIC, $precision=2) {
     $this->distance = $distance;
+    if ($type == self::IMPERIAL) {
+      $this->distance *= self::MILE;
+    }
     $this->time = self::timeToSeconds($time);
 
-    $this->pace = $this->distance / $this->time;
-    return round($this->pace, 2);
+    $this->pace = $this->distance / $this->time; // metres/sec
+    $this->pace *= self::SECS_IN_MIN; // metres/min
+
+    if ($type == self::IMPERIAL) {
+      $this->pace = $this->pace / self::MILE; // mile / min
+    }
+    else {
+      $this->pace = $this->pace / self::KM; // km / min
+    }
+
+    $this->pace = 1 / $this->pace; // min/km, min/mile
+
+    // convert to seconds
+    $seconds = $this->pace * self::SECS_IN_MIN;
+    return self::formatTime($seconds);
   }
 
 
@@ -99,7 +116,7 @@ class PaceCalculator {
 
 
   /**
-   * Format of min/km
+   * Format of min/km input
    * Convert to m/s
    * @param unknown_type $pace
    */
@@ -118,19 +135,10 @@ class PaceCalculator {
     return $pace;
   }
 
-  /**
-   *
-   * @param unknown_type $miles
-   */
-  public function milesToMetres($miles) {
-    $metres = $miles * self::MILE;
-    return $metres;
-  }
-
 
   /**
-   *
-   * @param unknown_type $seconds
+   * Convert time to human readable format
+   * @param $seconds
    */
   public function formatTime($seconds) {
 
@@ -152,6 +160,10 @@ class PaceCalculator {
   }
 
 
+  /**
+   * @param $value value to round
+   * @param $precision number of decimal places
+   */
   private function roundValue($value, $precision) {
     return round($value, $precision);
   }
