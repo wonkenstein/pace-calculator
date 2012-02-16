@@ -5,3 +5,5 @@
 #main form {margin:20px 0; border:1px solid #000; padding:20px;}
 #main fieldset {margin:20px 0; border:1px solid #666; padding:20px;}
 #main form .form-element {margin:10px 0; border:1px solid #ccc; padding:10px;}
+
+#main form .form-error *{color:#F00;}
