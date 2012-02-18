@@ -1,6 +1,7 @@
 <?php
 
 class PaceCalculator {
+
   const IMPERIAL = 1;
   const METRIC = 2;
   const MILE = 1609.344; // meters
