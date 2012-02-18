@@ -28,19 +28,27 @@
     <div id="main" role="main">
 
       <form id="pace-calculator">
+        <?php
+        if (count($form->errors)) {
+          echo '<ul><li>' . implode('</li><li>', array_values($form->errors)) . '</li></ul>';
+        }
+
+        //print_r($form->errors);
+        ?>
+
         <fieldset id="type">
           <legend>Type of calculation</legend>
 
           <label for="calculator-type-pace">
-            <input type="radio" id="calculator-type-pace" name="calculator-type" value="pace" <?php echo form_get_value('calculator-type', $_GET, 'pace'); ?> />
+            <input type="radio" id="calculator-type-pace" name="calculator-type" value="pace" <?php echo $form->getValue('calculator-type', $_GET, 'pace'); ?> />
             Pace
           </label>
           <label for="calculator-type-distance">
-            <input type="radio" id="calculator-type-distance" name="calculator-type" value="distance" <?php echo form_get_value('calculator-type', $_GET, 'distance'); ?> />
+            <input type="radio" id="calculator-type-distance" name="calculator-type" value="distance" <?php echo $form->getValue('calculator-type', $_GET, 'distance'); ?> />
             Distance
           </label>
           <label for="calculator-type-time">
-            <input type="radio" id="calculator-type-time" name="calculator-type" value="time" <?php echo form_get_value('calculator-type', $_GET, 'time'); ?> />
+            <input type="radio" id="calculator-type-time" name="calculator-type" value="time" <?php echo $form->getValue('calculator-type', $_GET, 'time'); ?> />
             Time
           </label>
         </fieldset>
@@ -48,76 +56,76 @@
 
         <fieldset id="time">
           <legend>Time</legend>
-          <div class="form-element <?php echo form_error_class('hrs', $ERRORS) ?>">
+          <div class="form-element <?php echo $form->errorClass('hrs') ?>">
             <label for="hrs">Hours</label>
-            <input type="number" min="0" id="hrs" name="hrs" <?php echo form_get_value('hrs', $_GET); ?> />
+            <input type="number" min="0" id="hrs" name="hrs" <?php echo $form->getValue('hrs', $_GET); ?> />
           </div>
-          <div class="form-element" <?php echo form_error_class('mins', $ERRORS) ?>>
+          <div class="form-element <?php echo $form->errorClass('mins') ?>">
             <label for="mins">Mins</label>
-            <input type="number" min="0" max="60" id="mins" name="mins" <?php echo form_get_value('mins', $_GET); ?> />
+            <input type="number" min="0" max="60" id="mins" name="mins" <?php echo $form->getValue('mins', $_GET); ?> />
           </div>
-          <div class="form-element" <?php echo form_error_class('secs', $ERRORS) ?>>
+          <div class="form-element <?php echo $form->errorClass('secs') ?>">
             <label for="secs">Secs</label>
-            <input type="number" min="0" max="60" id="secs" name="secs" <?php echo form_get_value('secs', $_GET); ?> />
+            <input type="number" min="0" max="60" id="secs" name="secs" <?php echo $form->getValue('secs', $_GET); ?> />
           </div>
         </fieldset>
 
         <fieldset id="distance">
           <legend>Distance</legend>
-          <div class="form-element <?php echo form_error_class('length', $ERRORS) ?>">
+          <div class="form-element <?php echo $form->errorClass('length') ?>">
             <label for="length">Length</label>
-            <input type="text" id="length" name="length" <?php echo form_get_value('length', $_GET); ?> />
+            <input type="text" id="length" name="length" <?php echo $form->getValue('length', $_GET); ?> />
           </div>
           <fieldset id="distance-type">
             <legend>Distance Type</legend>
             <label for="distance-type-mile">
-              <input type="radio" id="distance-type-mile" name="distance_type" value="imperial" <?php echo form_get_value('distance_type', $_GET, 'imperial'); ?> />
+              <input type="radio" id="distance-type-mile" name="distance_type" value="imperial" <?php echo $form->getValue('distance_type', $_GET, 'imperial'); ?> />
               miles
             </label>
             <label for="distance-type-km">
-              <input type="radio" id="distance-type-km" name="distance_type" value="metric" <?php echo form_get_value('distance_type', $_GET, 'metric'); ?> />
+              <input type="radio" id="distance-type-km" name="distance_type" value="metric" <?php echo $form->getValue('distance_type', $_GET, 'metric'); ?> />
               km
             </label>
           </fieldset>
           <div class="form-element">
             <label for="common-lengths">Common distances</label>
             <select id="common-lengths" name="common_length">
-              <option value="marathon" <?php echo form_get_value('common_length', $_GET, 'marathon', TRUE); ?>>Marathon</option>
-              <option value="half-marathon" <?php echo form_get_value('common_length', $_GET, 'half-marathon', TRUE); ?>>Half Marathon</option>
-              <option value="1km" <?php echo form_get_value('common_length', $_GET, '1km', TRUE); ?>>1km</option>
-              <option value="5km" <?php echo form_get_value('common_length', $_GET, '5km', TRUE); ?>>5km</option>
-              <option value="10km" <?php echo form_get_value('common_length', $_GET, '10km', TRUE); ?>>10km</option>
-              <option value="1mile" <?php echo form_get_value('common_length', $_GET, '1mile', TRUE); ?>>1 mile</option>
-              <option value="5miles" <?php echo form_get_value('common_length', $_GET, '5miles', TRUE); ?>>5 miles</option>
-              <option value="10miles" <?php echo form_get_value('common_length', $_GET, '10miles', TRUE); ?>>10 miles</option>
+              <option value="marathon" <?php echo $form->getValue('common_length', $_GET, 'marathon', TRUE); ?>>Marathon</option>
+              <option value="half-marathon" <?php echo $form->getValue('common_length', $_GET, 'half-marathon', TRUE); ?>>Half Marathon</option>
+              <option value="1km" <?php echo $form->getValue('common_length', $_GET, '1km', TRUE); ?>>1km</option>
+              <option value="5km" <?php echo $form->getValue('common_length', $_GET, '5km', TRUE); ?>>5km</option>
+              <option value="10km" <?php echo $form->getValue('common_length', $_GET, '10km', TRUE); ?>>10km</option>
+              <option value="1mile" <?php echo $form->getValue('common_length', $_GET, '1mile', TRUE); ?>>1 mile</option>
+              <option value="5miles" <?php echo $form->getValue('common_length', $_GET, '5miles', TRUE); ?>>5 miles</option>
+              <option value="10miles" <?php echo $form->getValue('common_length', $_GET, '10miles', TRUE); ?>>10 miles</option>
             </select>
           </div>
         </fieldset>
 
         <fieldset id="pace">
           <legend>Pace</legend>
-          <div class="form-element <?php echo form_error_class('pace_hrs', $ERRORS) ?>">
+          <div class="form-element <?php echo $form->errorClass('pace_hrs') ?>">
             <label for="pace-hrs">Hours</label>
-            <input type="number" min="0" id="pace-hrs" name="pace_hrs" <?php echo form_get_value('pace_hrs', $_GET); ?> />
+            <input type="number" min="0" id="pace-hrs" name="pace_hrs" <?php echo $form->getValue('pace_hrs', $_GET); ?> />
           </div>
-          <div class="form-element <?php echo form_error_class('pace_mins', $ERRORS) ?>">
+          <div class="form-element <?php echo $form->errorClass('pace_mins') ?>">
             <label for="pace_mins">Mins</label>
-            <input type="number" min="0" max="60" id="pace-mins" name="pace_mins" <?php echo form_get_value('pace_mins', $_GET); ?> />
+            <input type="number" min="0" max="60" id="pace-mins" name="pace_mins" <?php echo $form->getValue('pace_mins', $_GET); ?> />
           </div>
-          <div class="form-element <?php echo form_error_class('pace_secs', $ERRORS) ?>">
+          <div class="form-element <?php echo $form->errorClass('pace_secs') ?>">
             <label for="pace_secs">Secs</label>
-            <input type="number" min="0" max="60" id="pace-secs" name="pace_secs" <?php echo form_get_value('pace_secs', $_GET); ?> />
+            <input type="number" min="0" max="60" id="pace-secs" name="pace_secs" <?php echo $form->getValue('pace_secs', $_GET); ?> />
           </div>
 
           <fieldset id="pace-type">
             <legend>Pace Type</legend>
 
             <label for="pace-type-mile">
-              <input type="radio" id="pace-type-mile" name="pace_type" value="imperial" <?php echo form_get_value('pace_type', $_GET, 'imperial'); ?> />
+              <input type="radio" id="pace-type-mile" name="pace_type" value="imperial" <?php echo $form->getValue('pace_type', $_GET, 'imperial'); ?> />
               min/mile
             </label>
             <label for="pace-type-km">
-              <input type="radio" id="pace-type-km" name="pace_type" value="metric" <?php echo form_get_value('pace_type', $_GET, 'metric'); ?> />
+              <input type="radio" id="pace-type-km" name="pace_type" value="metric" <?php echo $form->getValue('pace_type', $_GET, 'metric'); ?> />
               min/km
             </label>
           </fieldset>
