@@ -42,6 +42,11 @@
 	<td>45</td>
 </tr>
 <tr>
+	<td>click</td>
+	<td>id=distance-type-mile</td>
+	<td></td>
+</tr>
+<tr>
 	<td>type</td>
 	<td>id=length</td>
 	<td>456</td>
