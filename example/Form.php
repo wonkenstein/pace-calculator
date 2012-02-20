@@ -187,11 +187,16 @@ class PaceCalculatorForm extends Form {
     parent::__construct();
   }
 
+
+  /**
+   *
+   * @param unknown_type $keys
+   * @param unknown_type $values
+   */
   function init($keys, $values) {
     parent::init($keys, $values);
 
-    //print_r($this->values);
-    // set the validation
+    // set the fields for validation
     $calculator_type = $this->values['calculator-type'];
     $validation_fields = array('calculator-type');
     $extra_validation_fields = array();
@@ -208,16 +213,10 @@ class PaceCalculatorForm extends Form {
       $validation_fields += array('', 'pace_hrs', 'pace_mins', 'pace_secs', 'length');
     }
 
-//    if (count($extra_validation_fields)) {
-      //$validation_fields = array_merge($validation_fields, $extra_validation_fields);
-//    }
 
     foreach ($validation_fields as $i => $field) {
       $this->validation[$field] = $this->validate_config[$field];
     }
-
-    //$validate = $validate_config;
-
   }
 }
 
