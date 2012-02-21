@@ -2,10 +2,16 @@
 include 'Form.php';
 $form = new PaceCalculatorForm();
 
-if (count($_GET)) {
+if (!count($_GET)) {
+  // set defaults
+  $form->values['measurement'] = 'metric';
+
+}
+else{
 
   $keys = array(
     'calculator-type',
+    'measurement',
     'hrs', 'mins', 'secs',
     'length', 'common_length', 'distance_type',
     'pace_hrs', 'pace_mins', 'pace_secs', 'pace_type',
@@ -41,8 +47,6 @@ if (count($_GET)) {
     else if ($pace_type == 'time') {
 
     }
-
   }
-
-
 }
+
