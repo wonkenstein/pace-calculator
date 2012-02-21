@@ -36,7 +36,7 @@
         //print_r($form->errors);
         ?>
 
-        <fieldset id="type" class="<?php echo $form->errorClass('calculator-type') ?>">
+        <fieldset id="calculator-type" class="<?php echo $form->errorClass('calculator-type') ?>">
           <legend>Type of calculation</legend>
 
             <input type="radio" id="calculator-type-pace" name="calculator-type" value="pace" <?php echo $form->getValue('calculator-type', 'pace'); ?> />
@@ -55,11 +55,11 @@
 
         <fieldset id="distance-type">
             <legend>Measurement</legend>
-            <label for="measurement">
+            <label for="measurement-imperial">
               <input type="radio" id="measurement-imperial" name="measurement" value="imperial" <?php echo $form->getValue('measurement', 'imperial'); ?> />
               Imperial (miles, miles/min)
             </label>
-            <label for="distance-type-km">
+            <label for="measurement-metric">
               <input type="radio" id="measurement-metric" name="measurement" value="metric" <?php echo $form->getValue('measurement', 'metric'); ?> />
               Metric (km, km/min)
             </label>
@@ -140,7 +140,9 @@
   <script>window.jQuery || document.write('<script src="js/libs/jquery-1.7.1.min.js"><\/script>')</script>
 
   <script src="js/plugins.js"></script>
+  <script src="js/PaceCalculator.plugin.js"></script>
   <script src="js/script.js"></script>
+
 
   </body>
 </html>

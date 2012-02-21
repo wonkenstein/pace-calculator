@@ -1,7 +1,7 @@
 
 
-$(document).ready(function(){
-  console.log('HELLO!');
+$(document).ready(function(){  
+  $('#pace-calculator').PaceCalculator();  
 });
 
 
