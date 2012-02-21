@@ -30,7 +30,7 @@
       <form id="pace-calculator">
         <?php
         if (count($form->errors)) {
-          echo '<ul><li>' . implode('</li><li>', array_values($form->errors)) . '</li></ul>';
+          echo '<ul class="message form-error"><li>' . implode('</li><li>', array_values($form->errors)) . '</li></ul>';
         }
 
         //print_r($form->errors);
@@ -53,8 +53,20 @@
           </label>
         </fieldset>
 
+        <fieldset id="distance-type">
+            <legend>Measurement</legend>
+            <label for="measurement">
+              <input type="radio" id="measurement-imperial" name="measurement" value="imperial" <?php echo $form->getValue('measurement', 'imperial'); ?> />
+              Imperial (miles, miles/min)
+            </label>
+            <label for="distance-type-km">
+              <input type="radio" id="measurement-metric" name="measurement" value="metric" <?php echo $form->getValue('measurement', 'metric'); ?> />
+              Metric (km, km/min)
+            </label>
+          </fieldset>
 
-        <fieldset id="time">
+
+        <fieldset id="time" class="variables">
           <legend>Time</legend>
           <div class="form-element <?php echo $form->errorClass('hrs') ?>">
             <label for="hrs">Hours</label>
@@ -70,23 +82,13 @@
           </div>
         </fieldset>
 
-        <fieldset id="distance">
+        <fieldset id="distance" class="variables">
           <legend>Distance</legend>
           <div class="form-element <?php echo $form->errorClass('length') ?>">
             <label for="length">Length</label>
             <input type="text" id="length" name="length" <?php echo $form->getValue('length'); ?> />
           </div>
-          <fieldset id="distance-type">
-            <legend>Distance Type</legend>
-            <label for="distance-type-mile">
-              <input type="radio" id="distance-type-mile" name="distance_type" value="imperial" <?php echo $form->getValue('distance_type', 'imperial'); ?> />
-              miles
-            </label>
-            <label for="distance-type-km">
-              <input type="radio" id="distance-type-km" name="distance_type" value="metric" <?php echo $form->getValue('distance_type', 'metric'); ?> />
-              km
-            </label>
-          </fieldset>
+
           <div class="form-element">
             <label for="common-lengths">Common distances</label>
             <select id="common-lengths" name="common_length">
@@ -102,7 +104,7 @@
           </div>
         </fieldset>
 
-        <fieldset id="pace">
+        <fieldset id="pace" class="variables">
           <legend>Pace</legend>
           <div class="form-element <?php echo $form->errorClass('pace_hrs') ?>">
             <label for="pace-hrs">Hours</label>
@@ -117,21 +119,11 @@
             <input type="number" min="0" max="60" id="pace-secs" name="pace_secs" <?php echo $form->getValue('pace_secs'); ?> />
           </div>
 
-          <fieldset id="pace-type">
-            <legend>Pace Type</legend>
-
-            <label for="pace-type-mile">
-              <input type="radio" id="pace-type-mile" name="pace_type" value="imperial" <?php echo $form->getValue('pace_type', 'imperial'); ?> />
-              min/mile
-            </label>
-            <label for="pace-type-km">
-              <input type="radio" id="pace-type-km" name="pace_type" value="metric" <?php echo $form->getValue('pace_type', 'metric'); ?> />
-              min/km
-            </label>
-          </fieldset>
         </fieldset>
 
-        <input type="submit" name="submit" value="Calculate" />
+        <div class="submit-button">
+          <input type="submit" name="submit" value="Calculate" />
+        </div>
 
 
       </form>
