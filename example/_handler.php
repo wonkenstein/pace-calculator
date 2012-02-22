@@ -27,25 +27,18 @@ else{
     $pace_type = $form->values['pace_type'];
 
     $values = array(
-      'time' => $time,
-      'distance' => $distance,
-      'pace' => $pace,
-      'pace_type' => $pace_type,
+        'time' => $time,
+        'distance' => $distance * 1000,
+        'pace' => $pace,
+        'pace_type' => $pace_type,
     );
 
     include '../PaceCalculator.php';
     $calc = new PaceCalculator();
-    
-    if ($form->values['measurement'] == 'imperial') {
-      $measurement = $calc::IMPERIAL;
-    }
-    else {
-      $measurement = $calc::METRIC;
-      $values['distance'] *= 1000;
-    }
-    
+
     if ($form->values['calculator-type'] == 'pace') {
-      $pace = $calc->getPace($values['distance'], $values['time'], $measurement);
+      $pace = $calc->getPace($values['distance'], $values['time']);
+      echo $pace, '=', $distance, '::', $time;
 
     }
     else if ($pace_type == 'distance') {
