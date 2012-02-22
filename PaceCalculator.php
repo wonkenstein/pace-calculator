@@ -81,10 +81,12 @@ class PaceCalculator {
       $this->pace = $this->pace / self::KM; // km / min
     }
 
+
     $this->pace = 1 / $this->pace; // min/km, min/mile
 
     // convert to seconds
     $seconds = $this->pace * self::SECS_IN_MIN;
+
     return self::formatTime($seconds);
   }
 
@@ -144,20 +146,16 @@ class PaceCalculator {
    */
   public function formatTime($seconds) {
 
-    $format = 'U';
-    $seconds = round($seconds,0);
-    $date1 = DateTime::createFromFormat($format, 0);
-    $date2 = DateTime::createFromFormat($format, $seconds);
+    $hours = floor($seconds / self::SECS_IN_HOUR);
+    $mins = floor(($seconds - ($hours * self::SECS_IN_HOUR)) / self::SECS_IN_MIN);
+    $secs = floor($seconds - ($hours * 3600) - ($mins * self::SECS_IN_MIN));
 
-    $interval = $date2->diff($date1);
-
-    if ($seconds > self::SECS_IN_HOUR) {
-      $format = array('%h','%i','%s');
+    if ($hours) {
+      $time = sprintf('%02d.%02d.%02d', $hours, $mins, $secs);
     }
     else {
-      $format = array('%i','%s');
+      $time = sprintf('%02d.%02d', $mins, $secs);
     }
-    $time = $interval->format(implode(self::TIME_DELIMITER, $format));
 
     return $time;
   }
