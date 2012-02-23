@@ -148,10 +148,12 @@ class PaceCalculator {
 
     $hours = floor($seconds / self::SECS_IN_HOUR);
     $mins = floor(($seconds - ($hours * self::SECS_IN_HOUR)) / self::SECS_IN_MIN);
-    $secs = floor($seconds - ($hours * 3600) - ($mins * self::SECS_IN_MIN));
+
+    // round rather than floor to get nearest round number
+    $secs = round($seconds - ($hours * 3600) - ($mins * self::SECS_IN_MIN), 0);
 
     if ($hours) {
-      $time = sprintf('%02d.%02d.%02d', $hours, $mins, $secs);
+      $time = sprintf('%d.%02d.%02d', $hours, $mins, $secs);
     }
     else {
       $time = sprintf('%02d.%02d', $mins, $secs);

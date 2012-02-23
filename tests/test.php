@@ -127,6 +127,7 @@ class TestOfPaceCalculator extends UnitTestCase {
         array('10000', '42.37', '4.16', PaceCalculator::METRIC), //
         array('13.109375', '1.42.21', '7.48', PaceCalculator::IMPERIAL), //
         array('10', '1.15.21', '7.32', PaceCalculator::IMPERIAL), //
+        array('7.8', '47.30', '6.05', PaceCalculator::IMPERIAL), //
     );
 
     foreach ($testcases as $case) {
