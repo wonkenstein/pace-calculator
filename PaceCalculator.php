@@ -170,4 +170,14 @@ class PaceCalculator {
   private function roundValue($value, $precision) {
     return round($value, $precision);
   }
+
+
+  public function metresToMiles($distance) {
+    return $distance / self::MILE;
+  }
+
+  public function milesToMetres($distance) {
+    return $distance * self::MILE;
+  }
+
 }
