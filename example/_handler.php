@@ -1,9 +1,11 @@
 <?php
 include 'Form.php';
+include '../PaceCalculator.php';
 $form = new PaceCalculatorForm();
 
 if (!count($_GET)) {
   // set defaults
+  $form->values['calculator-type'] = 'pace';
   $form->values['measurement'] = 'metric';
 
 }
@@ -19,7 +21,6 @@ else{
 
   $form->init($keys, $_GET);
 
-
   if ($valid = $form->validate()) {
     $time = $form->values['hrs'] . '.' . $form->values['mins'] . '.' . $form->values['secs'];
     $distance = ($form->values['length']) ? $form->values['length'] : $form->values['common_length'];
@@ -33,7 +34,7 @@ else{
         'pace_type' => $pace_type,
     );
 
-    include '../PaceCalculator.php';
+
     $calc = new PaceCalculator();
 
     if ($form->values['calculator-type'] == 'pace') {
