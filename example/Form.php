@@ -201,16 +201,25 @@ class PaceCalculatorForm extends Form {
     $validation_fields = array('calculator-type');
     $extra_validation_fields = array();
 
+
+    print_r($this->values);
+    if (!$this->values['length'] && $this->values['common_length']) {
+      $this->values['length'] = $this->setCommonLength();
+    }
+
+
     // different validation depending on choice of calculator
     // php bug so have to add '' as first array element when += array?
     if ($calculator_type == 'pace') {
       $validation_fields += array('', 'hrs', 'mins', 'secs', 'length');
     }
     else if ($calculator_type == 'distance') {
-      $validation_fields += array('', 'hrs', 'mins', 'secs', 'pace_hrs', 'pace_mins', 'pace_secs');
+      $validation_fields += array('', 'hrs', 'mins', 'secs', 'pace_hrs',
+                                  'pace_mins', 'pace_secs');
     }
     else if ($calculator_type == 'time') {
-      $validation_fields += array('', 'pace_hrs', 'pace_mins', 'pace_secs', 'length');
+      $validation_fields += array('', 'pace_hrs', 'pace_mins', 'pace_secs',
+                                  'length');
     }
 
 
@@ -218,6 +227,39 @@ class PaceCalculatorForm extends Form {
       $this->validation[$field] = $this->validate_config[$field];
     }
   }
+
+
+  function setCommonLength() {
+
+    if ($this->values['measurement'] == 'metric') {
+      $distance = array(
+        'marathon' => PaceCalculator::milesToMetres(26.2),
+        'half-marathon' => PaceCalculator::milesToMetres(13.1),
+        '1km' => '1000',
+        '5km' => '5000',
+        '10km' => '10000',
+        '1mile' => PaceCalculator::milesToMetres(1),
+        '5miles' => PaceCalculator::milesToMetres(5),
+        '10miles' => PaceCalculator::milesToMetres(10),
+      );
+    }
+    else {
+      $distance = array(
+        'marathon' => 26.2,
+        'half-marathon' => 13.1,
+        '1km' => PaceCalculator::metresToMiles(1000),
+        '5km' => PaceCalculator::metresToMiles(5000),
+        '10km' => PaceCalculator::metresToMiles(10000),
+        '1mile' => 1,
+        '5miles' => 5,
+        '10miles' => 10,
+      );
+    }
+
+    return $distance[$this->values['common_length']] / 1000;
+
+  }
+
 }
 
 
