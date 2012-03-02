@@ -22,16 +22,23 @@
 
 
   //
-  Plugin.prototype.init = function() {
-    console.log('HELLO');
+  Plugin.prototype.init = function() {    
     var self = this;
     $('#calculator-type').find('input').click(function(e){
-      var el = $(this);
-      $('fieldset', self.element).show();
-      $('#' + el.val()).hide();
+      self.hideCalculatorInput($(this).val());      
     });
+    
+    var calculator_type = $('input[name="calculator-type"]').val();
+    self.hideCalculatorInput(calculator_type);
+    
   };
 
+  //scroll direction taken from options.scroll
+  Plugin.prototype.hideCalculatorInput = function(fieldset_id) {
+    var self = this;
+    $('fieldset', self.element).show();    
+    $('#' + fieldset_id).hide();
+  };
 
 
 
