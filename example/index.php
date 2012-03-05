@@ -130,7 +130,7 @@
 
 
     <footer>
-      FOOTER
+
     </footer>
 
     </div>
