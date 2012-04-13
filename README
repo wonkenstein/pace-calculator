@@ -9,3 +9,8 @@ $paceCalculator->getDistance($pace, $time);
 $paceCalculator->getPace($distance, $time);
 
 $paceCalculator->getTimeSplits($distance, $time, $splits);
+
+
+Use cases:
+Want to know the pace for a given distance and time.
+I want to run half marathon in 1.45.00, what is my pace?
