@@ -15,6 +15,55 @@ class PaceCalculator {
   public $pace = 0;
   public $distance = 0;
   public $time = 0;
+  public $units = '';
+
+  /**
+   * Should only set 2 of 3
+   * If metric:
+   *   pace should be min/km
+   *   distance should be km
+   *   time should be hh:mm:ss
+   * If imperial
+   *   pace should be min/mile
+   *   distance should be miles
+   *   time should be hh:mm:ss
+   */
+  public function __construct($values=array(), $units=self::METRIC) {
+
+    $this->units = $units;
+
+    if (isset($values['time'])) {
+      $this->time = self::timeToSeconds($values['time']);
+    }
+    if (isset($values['pace'])) {
+      $this->pace = self::paceToMetresPerSeconds($values['pace']);
+    }
+    if (isset($values['distance'])) {
+      $this->distance = self::distanceToMetres($values['distance']);
+    }
+
+    //print_r($this);
+  }
+
+  /**
+   *
+   */
+  public function calculate() {
+
+    if ($this->distance && $this->time && !$this->pace) {
+      self::calculatePace();
+    }
+    else if ($this->time && $this->pace && !$this->distance) {
+      self::calculateDistance();
+    }
+    else if ($this->pace && $this->distance && !$this->time) {
+      self::calculateTime();
+    }
+    else {
+      // no calculation!
+      return false;
+    }
+  }
 
 
   /**
@@ -42,19 +91,18 @@ class PaceCalculator {
    * @param $pace min/km or min/mile
    * @param $time hh.mm.ss
    */
-  public function getDistance($pace, $time, $type=self::METRIC, $precision=0) {
-
-    $this->time = self::timeToSeconds($time);
-    $this->pace = self::paceToMetresPerSeconds($pace, $type);
-
-    // get the distance
+  public function calculateDistance() {
     $this->distance = $this->pace * $this->time;
+  }
 
-    if ($type == self::IMPERIAL) {
-      // convert back to miles
-      $precision = 4; //default precision
-      $this->distance = $this->distance / self::MILE;
+  public function getDistance($precision=4) {
+    if ($this->units == self::IMPERIAL) {
+      $this->distance /= self::MILE;
     }
+    else {
+      $this->distance /= self::KM;
+    }
+
     return self::roundValue($this->distance, $precision);
   }
 
@@ -64,7 +112,7 @@ class PaceCalculator {
    * @param $distance metres or miles
    * @param $time hh.mm.ss
    */
-  public function getPace($distance, $time, $type=self::METRIC, $precision=2) {
+  public function calculatePace($distance, $time, $type=self::METRIC, $precision=2) {
     $this->distance = $distance;
     if ($type == self::IMPERIAL) {
       $this->distance *= self::MILE;
@@ -90,6 +138,13 @@ class PaceCalculator {
     return self::formatTime($seconds);
   }
 
+
+  public function distanceToMetres($distance) {
+    if ($this->units == self::IMPERIAL) {
+      $distance *= self::MILE;
+    }
+    return $distance;
+  }
 
   /**
    * Assume in standard format
@@ -120,21 +175,16 @@ class PaceCalculator {
 
 
   /**
-   * Format of min/km input
-   * Convert to m/s
-   * @param unknown_type $pace
+   *
+   * @param $pace min/km or min/mile
    */
-  public function paceToMetresPerSeconds($pace, $type=self::METRIC, $precision=0) {
+  public function paceToMetresPerSeconds($pace) {
     //
-    $unit_distance = ($type == self::IMPERIAL) ? self::MILE : self::KM;
+    $unit_distance = ($this->units == self::IMPERIAL) ? self::MILE : self::KM;
 
-    $pace = self::timeToSeconds($pace);
-    $pace = $pace / $unit_distance;
-    $pace = (1/$pace);
-
-    if ($precision) {
-      $pace = round($pace, $precision);
-    }
+    $pace = self::timeToSeconds($pace); // secs/km or secs/mile
+    $pace = $pace / $unit_distance;  // secs/metres
+    $pace = (1/$pace); // metres/sec
 
     return $pace;
   }
