@@ -26,8 +26,17 @@
     </header>
 
     <div id="main" role="main">
+      <?php if (isset($calc)) : ?>
+      <?php print_r($calc);?>
+        <ul>
+          <li>Pace: <?php echo $calc->calculatePace(); ?></li>
+          <li>Distance: <?php echo $calc->getDistance(); ?></li>
+          <li>Time: <?php echo $calc->getTime(); ?></li>
+        </ul>
+      <?php endif; ?>
 
-      <form id="pace-calculator">
+
+      <form id="pace-calculator" method="get">
         <?php
         if (count($form->errors)) {
           echo '<ul class="message form-error"><li>' . implode('</li><li>', array_values($form->errors)) . '</li></ul>';
@@ -39,8 +48,9 @@
         <fieldset id="calculator-type" class="<?php echo $form->errorClass('calculator-type') ?>">
           <legend>Type of calculation</legend>
 
-            <input type="radio" id="calculator-type-pace" name="calculator-type" value="pace" <?php echo $form->getValue('calculator-type', 'pace'); ?> />
+
           <label for="calculator-type-pace">
+            <input type="radio" id="calculator-type-pace" name="calculator-type" value="pace" <?php echo $form->getValue('calculator-type', 'pace'); ?> />
             Pace
           </label>
           <label for="calculator-type-distance">

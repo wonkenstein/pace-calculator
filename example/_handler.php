@@ -3,6 +3,8 @@ include 'Form.php';
 include '../PaceCalculator.php';
 $form = new PaceCalculatorForm();
 
+
+
 if (!count($_GET)) {
   // set defaults
   $form->values['calculator-type'] = 'pace';
@@ -10,6 +12,8 @@ if (!count($_GET)) {
 
 }
 else{
+
+  echo '<!-- ' . print_r($_GET, 1). ' -->';
 
   $keys = array(
     'calculator-type',
@@ -34,13 +38,12 @@ else{
         'pace_type' => $pace_type,
     );
 
-
+    // should push all this into PaceCalculatorForm?
+    // so $form->calculate();
     $calc = new PaceCalculator();
 
     if ($form->values['calculator-type'] == 'pace') {
-      $pace = $calc->getPace($values['distance'], $values['time']);
-      echo $pace, '=', $distance, '::', $time;
-
+      $pace = $calc->calculatePace($values['distance'], $values['time']);
     }
     else if ($pace_type == 'distance') {
 
