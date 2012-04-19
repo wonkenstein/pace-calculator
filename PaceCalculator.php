@@ -200,7 +200,6 @@ class PaceCalculator {
    * @param $seconds
    */
   private function formatTime($seconds) {
-//echo $seconds, '<br />';
     $seconds = round($seconds); // round to nearest second
     $hours = floor($seconds / self::SECS_IN_HOUR);
 
