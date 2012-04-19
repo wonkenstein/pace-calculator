@@ -8,14 +8,18 @@ class TestOfPaceCalculator extends UnitTestCase {
    *
    */
   function testOne() {
-    $paceCalculator = new PaceCalculator();
+    //$paceCalculator = new PaceCalculator();
     $this->assertTrue(TRUE);
     //$this->assertTrue(FALSE);
     //$this->assertFalse(TRUE);
     $this->assertFalse(FALSE);
   }
 
-  function testCalculate() {
+
+  /**
+   *
+   */
+  function testCalculateDistance() {
     $distance_tests = array(
       array('5.0', '0.25.0', 5, PaceCalculator::METRIC), // 5min/km, 25mins 5k
       array('4.15', '45.0', 10.5882, PaceCalculator::METRIC), //
@@ -26,8 +30,6 @@ class TestOfPaceCalculator extends UnitTestCase {
       array('4.54', '31.41', 6.47, PaceCalculator::METRIC, 2), //
       array('4.55', '1.44.58', 21.35, PaceCalculator::METRIC, 2), //
       array('7.54', '1.44.53', 13.28, PaceCalculator::IMPERIAL, 2), //
-
-
     );
 
     foreach ($distance_tests as $test) {
@@ -45,36 +47,6 @@ class TestOfPaceCalculator extends UnitTestCase {
       else {
         $this->assertEqual($test[2], $paceCalculator->getDistance());
       }
-
-    }
-
-  }
-
-
-  /**
-   *
-   */
-  function xtestTimeToSeconds() {
-    $paceCalculator = new PaceCalculator();
-
-    $testcases = array(
-      // time, seconds
-      array('1.24', 84), // 84 secs
-      array('45.24', 2724), // 84 secs
-      array('05.24', 324), // 84 secs
-      array('05.04', 304), // 84 secs
-      array('0.05.04', 304), // 1hr, 3 mins,
-      array('0.27', 27), // 27 secs
-      array('0.09', 9), // 9 secs
-      array('0.0.09', 9), // 9 secs
-      array('1.03.34', 3814), // 1hr, 3 mins,
-      array('1.3.34', 3814), // 1hr, 3 mins,
-
-    );
-
-    foreach ($testcases as $case) {
-      $seconds = $paceCalculator->timeToSeconds($case[0]);
-      $this->assertEqual($case[1], $seconds);
     }
   }
 
@@ -82,25 +54,35 @@ class TestOfPaceCalculator extends UnitTestCase {
   /**
    *
    */
-  function xtestPaceToMetresPerSeconds() {
-    $paceCalculator = new PaceCalculator();
+  function testCalculatePace() {
+    $tests = array(
+      array('5', '0.25.0', '5.0', PaceCalculator::METRIC), // 5min/km, 25mins 5k
+      array('10.5882', '45.0', '4.15', PaceCalculator::METRIC), //
+      array('10', '47.30', '4.45', PaceCalculator::METRIC), // 45mins, 8min/mile, 9.03k
+      array('5.6875', '45.30', '8.0', PaceCalculator::IMPERIAL), // 45mins, 8min/mile, 9.03k
+      array('6.01', '31.26', '5.14', PaceCalculator::METRIC, 2), //
+      array('3.734', '31.26', '8.25', PaceCalculator::IMPERIAL, 2), //
+      array('6.47', '31.41', '4.54', PaceCalculator::METRIC, 2), //
+      array('21.35', '1.44.58', '4.55', PaceCalculator::METRIC, 2), //
+      array('13.28', '1.44.53', '7.54', PaceCalculator::IMPERIAL, 2), //
 
-    $testcases = array(
-      array('5.00', 3.333, PaceCalculator::METRIC), // 5.00 mins/km
-      array('4.00', 4.167, PaceCalculator::METRIC), // 4 mins/km
-      array('4.30', 3.704, PaceCalculator::METRIC), // 4.30 /km
-      array('3.54', 4.274, PaceCalculator::METRIC), // 3.54 / km
-
-      array('8.00', 3.353, PaceCalculator::IMPERIAL), // 5.00 mins/km
-      array('7.45', 3.461, PaceCalculator::IMPERIAL), // 4 mins/km
-      array('7.0', 3.832, PaceCalculator::IMPERIAL), // 4.30 /km
-      array('6.54', 3.887, PaceCalculator::IMPERIAL), // 3.54 / km
     );
 
-    $precision = 3;
-    foreach ($testcases as $case) {
-      $pace = $paceCalculator->paceToMetresPerSeconds($case[0], $case[2], $precision);
-      $this->assertEqual($case[1], $pace);
+    foreach ($tests as $test) {
+      $values = array(
+        'distance' => $test[0],
+        'time' => $test[1],
+      );
+
+      $paceCalculator = new PaceCalculator($values, $test[3]);
+      $paceCalculator->calculate();
+
+      if (isset($test[4])) {
+        $this->assertEqual($test[2], $paceCalculator->getPace($test[4]));
+      }
+      else {
+        $this->assertEqual($test[2], $paceCalculator->getPace());
+      }
     }
   }
 
@@ -108,65 +90,32 @@ class TestOfPaceCalculator extends UnitTestCase {
   /**
    *
    */
-  function xtestCalculateDistance() {
-    $paceCalculator = new PaceCalculator();
-
-    $testcases = array(
-      // mins, pace, distance
-      array('5.0', '0.25.0', 5000, PaceCalculator::METRIC), // 5min/km, 25mins 5k
-      array('4.15', '45.0', 10588, PaceCalculator::METRIC), //
-      array('4.45', '47.30', 10000, PaceCalculator::METRIC), // 45mins, 8min/mile, 9.03k
-      array('8.0', '45.30', 5.6875, PaceCalculator::IMPERIAL), // 45mins, 8min/mile, 9.03k
+  function testCalculateTime() {
+    $tests = array(
+        array('5', '5.0', '25.0', PaceCalculator::METRIC), // 5min/km, 25mins 5k
+        array('10.5882', '4.15', '45.0', PaceCalculator::METRIC), //
+        array('10', '4.45', '47.30', PaceCalculator::METRIC), // 45mins, 8min/mile, 9.03k
+        array('5.6875', '8.0','45.30', PaceCalculator::IMPERIAL), // 45mins, 8min/mile, 9.03k
+        array('6.005', '5.14', '31.26', PaceCalculator::METRIC, 2), //
+        array('3.734', '8.25', '31.26', PaceCalculator::IMPERIAL, 2), //
+        array('6.465', '4.54', '31.41', PaceCalculator::METRIC, 2), //
+        array('21.35', '4.55', '1.44.58', PaceCalculator::METRIC, 2), //
+        array('13.277', '7.54', '1.44.53', PaceCalculator::IMPERIAL, 2), //
     );
 
-    foreach ($testcases as $case) {
-      $distance = $paceCalculator->calculateDistance($case[0], $case[1], $case[3]);
-      $this->assertEqual($case[2], $distance);
+    foreach ($tests as $test) {
+      $values = array(
+          'distance' => $test[0],
+          'pace' => $test[1],
+      );
+
+      $paceCalculator = new PaceCalculator($values, $test[3]);
+      $paceCalculator->calculate();
+
+
+      $this->assertEqual($test[2], $paceCalculator->getTime());
+
     }
   }
 
-
-  /**
-   *
-   */
-  function xtestGetTime() {
-    $paceCalculator = new PaceCalculator();
-
-    $testcases = array(
-    // mins, pace, distance
-        array('10000', '4.45', '47.30', PaceCalculator::METRIC), // 5min/km, 25mins 5k
-        array('21097.5', '5.0', '1.45.29', PaceCalculator::METRIC), //
-        array('5000', '4.11', '20.55', PaceCalculator::METRIC), // 45mins, 8min/mile, 9.03k
-        array('13.109375', '8.0', '1.44.53', PaceCalculator::IMPERIAL), // 45mins, 8min/mile, 9.03k
-        array('10', '7.33', '1.15.30', PaceCalculator::IMPERIAL), // 45mins, 8min/mile, 9.03k
-    );
-
-    foreach ($testcases as $case) {
-      $time = $paceCalculator->getTime($case[0], $case[1], $case[3]);
-      $this->assertEqual($case[2], $time);
-    }
-  }
-
-
-  /**
-   *
-   */
-  function xtestCalculatePace() {
-    $paceCalculator = new PaceCalculator();
-
-    $testcases = array(
-    // mins, pace, distance
-        array('10000', '45.00', '4.30', PaceCalculator::METRIC), // 5min/km, 25mins 5k
-        array('5000', '22.25', '4.29', PaceCalculator::METRIC), //
-        array('10000', '42.37', '4.16', PaceCalculator::METRIC), //
-        array('13.109375', '1.42.21', '7.48', PaceCalculator::IMPERIAL), //
-        array('10', '1.15.21', '7.32', PaceCalculator::IMPERIAL), //
-        array('7.8', '47.30', '6.05', PaceCalculator::IMPERIAL), //
-    );
-
-    foreach ($testcases as $case) {
-      $time = $paceCalculator->calculatePace($case[0], $case[1], $case[3]);
-      $this->assertEqual($case[2], $time);
-    }
-  }
 }
