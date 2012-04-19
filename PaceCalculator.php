@@ -17,6 +17,7 @@ class PaceCalculator {
   public $time = 0;
   public $units = '';
 
+
   /**
    * Should only set 2 of 3
    * If metric:
@@ -66,22 +67,16 @@ class PaceCalculator {
   }
 
 
+  private function calculateTime() {
+    $this->time = $this->distance / $this->pace;
+  }
+
   /**
    *
    * @param $distance metres or miles
    * @param $pace min/km or min/mile
    */
-  public function getTime($distance, $pace, $type=self::METRIC) {
-
-    $this->distance = $distance;
-    $this->pace = self::paceToMetresPerSeconds($pace, $type);
-
-    if ($type == self::IMPERIAL) {
-      $this->distance *= self::MILE; // convert miles to metres
-    }
-
-    $this->time = $this->distance / $this->pace;
-
+  public function getTime() {
     return self::formatTime($this->time);
   }
 
@@ -91,7 +86,7 @@ class PaceCalculator {
    * @param $pace min/km or min/mile
    * @param $time hh.mm.ss
    */
-  public function calculateDistance() {
+  private function calculateDistance() {
     $this->distance = $this->pace * $this->time;
   }
 
@@ -112,45 +107,55 @@ class PaceCalculator {
    * @param $distance metres or miles
    * @param $time hh.mm.ss
    */
-  public function calculatePace($distance, $time, $type=self::METRIC, $precision=2) {
-    $this->distance = $distance;
-    if ($type == self::IMPERIAL) {
-      $this->distance *= self::MILE;
-    }
-    $this->time = self::timeToSeconds($time);
-
-    $this->pace = $this->distance / $this->time; // metres/sec
-    $this->pace *= self::SECS_IN_MIN; // metres/min
-
-    if ($type == self::IMPERIAL) {
-      $this->pace = $this->pace / self::MILE; // mile / min
-    }
-    else {
-      $this->pace = $this->pace / self::KM; // km / min
-    }
-
-
-    $this->pace = 1 / $this->pace; // min/km, min/mile
-
-    // convert to seconds
-    $seconds = $this->pace * self::SECS_IN_MIN;
-
-    return self::formatTime($seconds);
+  private function calculatePace() {
+    $this->pace = $this->distance / $this->time;
   }
 
 
-  public function distanceToMetres($distance) {
+  /**
+   * Pace is in metres/sec
+   * Should be returned as km/min or miles/min as it makes more sense to people
+   * @param unknown_type $precision
+   */
+  public function getPace($precision=0) {
+
+    $pace = $this->pace * self::SECS_IN_MIN; // metres/min
+
+    if ($this->units == self::IMPERIAL) {
+      $pace /= self::MILE; // mile / min
+    }
+    else {
+      $pace /= self::KM; // km / min
+    }
+
+    $pace = 1/$pace; // invert to get min/km or min/mile
+
+    // return in mm.ss / km  or mm.ss/mile
+    $secs = $pace * self::SECS_IN_MIN;
+    return self::formatTime($secs);
+  }
+
+
+  /**
+   *
+   * @param unknown_type $distance
+   */
+  private function distanceToMetres($distance) {
     if ($this->units == self::IMPERIAL) {
       $distance *= self::MILE;
     }
+    else {
+      $distance *= self::KM;
+    }
     return $distance;
   }
+
 
   /**
    * Assume in standard format
    * @param $time hh.mm.ss
    */
-  public function timeToSeconds($time) {
+  private function timeToSeconds($time) {
     $time = array_reverse(explode(self::TIME_DELIMITER, $time));
 
     $secs = 0;
@@ -178,7 +183,7 @@ class PaceCalculator {
    *
    * @param $pace min/km or min/mile
    */
-  public function paceToMetresPerSeconds($pace) {
+  private function paceToMetresPerSeconds($pace) {
     //
     $unit_distance = ($this->units == self::IMPERIAL) ? self::MILE : self::KM;
 
@@ -194,13 +199,15 @@ class PaceCalculator {
    * Convert time to human readable format
    * @param $seconds
    */
-  public function formatTime($seconds) {
-
+  private function formatTime($seconds) {
+//echo $seconds, '<br />';
+    $seconds = round($seconds); // round to nearest second
     $hours = floor($seconds / self::SECS_IN_HOUR);
+
     $mins = floor(($seconds - ($hours * self::SECS_IN_HOUR)) / self::SECS_IN_MIN);
 
     // round rather than floor to get nearest round number
-    $secs = round($seconds - ($hours * 3600) - ($mins * self::SECS_IN_MIN), 0);
+    $secs = floor($seconds - ($hours * 3600) - ($mins * self::SECS_IN_MIN));
 
     if ($hours) {
       $time = sprintf('%d.%02d.%02d', $hours, $mins, $secs);
